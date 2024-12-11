@@ -1,0 +1,30 @@
+{
+  "name": "ets",
+  "version": "1.0.0",
+  "description": "ETS surcharge automated updates",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/populateContentful.js",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "populate": "tsc && node dist/populateContentful.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^22.10.1",
+    "axios": "^1.7.9",
+    "contentful-management": "^11.40.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "axios-mock-adapter": "^2.1.0",
+    "dotenv": "^16.4.7",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}
