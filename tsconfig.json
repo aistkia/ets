@@ -9,7 +9,10 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "moduleResolution": "Node",
+    "allowJs": true,
+
   },
   "include": ["scripts/**/*"],
   "exclude": ["node_modules"]
