@@ -61,31 +61,39 @@ export async function getAccessToken(): Promise<string> {
 
 
 
-// Function to fetch transportation charge records
+// Function to fetch transportation charge records from the API
+// This function uses Axios to make a GET request to retrieve data.
+// It accepts an OAuth2 token for authorization and returns an array of TransportationChargeRecord objects.
+
 export async function getTransportationChargeRecords(
-  token: string
+  token: string // OAuth2 authorization token required to access the API
 ): Promise<TransportationChargeRecord[]> {
   try {
+    // Make a GET request to the ETS data endpoint using the provided token
     const response: AxiosResponse<{ value: TransportationChargeRecord[] }> =
       await axios.get(
-        process.env.ETS_DATA_ENDPOINT || '',
+        process.env.ETS_DATA_ENDPOINT || '', // API endpoint URL fetched from environment variables
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: 'application/json',
+            Authorization: `Bearer ${token}`, // Add Bearer token for authentication
+            Accept: 'application/json', // Specify response format as JSON
           },
         }
       )
 
+    // Return the 'value' property containing the array of transportation charge records
     return response.data.value
   } catch (error: any) {
+    // Log any errors encountered during the request to the console
     console.error(
-      'Error fetching transportation charge records:',
-      error.message
+      'Error fetching transportation charge records:', // Custom error message for debugging
+      error.message // Log the specific error message for easier troubleshooting
     )
+    // Throw a new error to notify the caller that data retrieval failed
     throw new Error('Failed to retrieve transportation charge records')
   }
 }
+
 
 // Function to fetch route translation records
 export async function getRouteTranslationRecords(
@@ -123,37 +131,45 @@ export async function getEtsData(): Promise<CombinedData[]> {
         getRouteTranslationRecords(token),
       ])
 
-    // Map route IDs to route names for easy lookup
-    const routeTranslationMap: Record<
-      string,
-      { en: string; 'da-DK': string; 'de-DE': string }
-    > = routeTranslationRecords.reduce((acc, route) => {
-      acc[route.cr02c_routetranslation1id] = {
-        en: route.cr02c_englishroutename,
-        'da-DK': route.cr02c_danishroutename,
-        'de-DE': route.cr02c_germanroutename,
-      }
-      return acc
-    }, {} as Record<string, { en: string; 'da-DK': string; 'de-DE': string }>)
+    // Step 1: Map route IDs to their corresponding route names for easy lookup.
+  // This creates an object where the key is the route ID and the value is an object containing translations.
+  const routeTranslationMap: Record<
+  string,
+  { en: string; 'da-DK': string; 'de-DE': string }
+  > = routeTranslationRecords.reduce((acc, route) => {
+  // Assign route translations using route ID as the key
+  acc[route.cr02c_routetranslation1id] = {
+    en: route.cr02c_englishroutename, // English route name
+    'da-DK': route.cr02c_danishroutename, // Danish route name
+    'de-DE': route.cr02c_germanroutename, // German route name
+  }
+  return acc
+  }, {} as Record<string, { en: string; 'da-DK': string; 'de-DE': string }>) // Initialize accumulator with the correct type
 
-    // Combine transportation charge records with route translations
-    const combinedData: CombinedData[] = transportationChargeRecords.map(
-      (record) => {
-        const routeNames =
-          routeTranslationMap[record._cr02c_route_value] || {
-            en: null,
-            'da-DK': null,
-            'de-DE': null,
-          }
-
-        return {
-          recordId: record.cr02c_recordid,
-          chargeRange: record.cr02c_chargerange,
-          chargeInEuros: record.cr02c_chargeineuros,
-          routeNames,
-        }
+  // Step 2: Combine transportation charge records with their corresponding route translations.
+  // This maps over the transportation charge records and enriches each record with route name translations.
+  const combinedData: CombinedData[] = transportationChargeRecords.map(
+  (record) => {
+    // Look up route translations using the route ID from the transportation record.
+    // If no translation exists, fallback to null for each language.
+    const routeNames =
+      routeTranslationMap[record._cr02c_route_value] || {
+        en: null,
+        'da-DK': null,
+        'de-DE': null,
       }
-    )
+
+    // Return the transformed record with the required fields.
+    return {
+      recordId: record.cr02c_recordid, // Unique record ID
+      chargeRange: record.cr02c_chargerange, // Charge range
+      chargeInEuros: record.cr02c_chargeineuros, // ETS charge value in euros
+      routeNames, // Route names object containing translations
+    }
+  }
+)
+
+    
 
     // Filter out records where all route names are null
     const filteredData = combinedData.filter(

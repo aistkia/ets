@@ -1,0 +1,15 @@
+[
+    {
+      "recordId": "1",
+      "chargeRange": "0-100",
+      "chargeInEuros": 10.5,
+      "routeNames": { "en": "Route 1", "da-DK": "Rute 1", "de-DE": "Route 1" }
+    },
+    {
+      "recordId": "2",
+      "chargeRange": "101-200",
+      "chargeInEuros": 20.5,
+      "routeNames": { "en": "Route 2", "da-DK": "Rute 2", "de-DE": "Route 2" }
+    }
+  ]
+  

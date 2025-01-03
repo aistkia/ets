@@ -4,7 +4,7 @@ import { getEtsData } from '../fetchPowerAppsData';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-// Mocks and stubs setup
+//Mocks and stubs setup
 describe('updateEntry', () => {
   const mockEtsData = [
     {

@@ -50,14 +50,15 @@ export async function updateEntry(): Promise<void> {
     });
 
     for (const locale of locales) {
-      const groupedData: GroupedCharges = etsData.reduce((acc, record) => {
+      const groupedData: GroupedCharges = etsData.reduce((acc: GroupedCharges, record) => {
         const routeName = record.routeNames?.[locale] || 'N/A';
         if (!acc[routeName]) {
-          acc[routeName] = {};
+          acc[routeName] = {}; // Initialize as an object
         }
-        acc[routeName][record.chargeRange] = record.chargeInEuros;
+        acc[routeName][record.chargeRange] = record.chargeInEuros; // Explicit assignment
         return acc;
       }, {} as GroupedCharges);
+      
 
       const tableRows = Object.entries(groupedData).map(([routeName, charges]) => {
         const rowCells = [
