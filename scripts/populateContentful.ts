@@ -32,8 +32,8 @@ export async function updateEntry(): Promise<void> {
   try {
     const spaceId = process.env.CONTENTFUL_SPACE_ID || '';
     const environmentId = 'dev';
-    const entryId = '3t6e7WGa0cUC3ar4oG8mHk';
-    const locales: string[] = ['en', 'da-DK', 'de-DE'];
+    const entryId = '73im1fYgBtcXI5KQBfTdmb';
+    const locales: string[] = ['en', 'da-DK', 'de-DE', 'nl-NL', 'et-EE', 'fr-FR', 'fi-FI', 'it-IT', 'lv-LV', 'lt-LT', 'nb-NO', 'pl-PL', 'es-ES', 'sv-SE', 'tr-TR'];
 
     const space = await client.getSpace(spaceId);
     const environment = await space.getEnvironment(environmentId);
@@ -67,7 +67,14 @@ export async function updateEntry(): Promise<void> {
             content: [
               {
                 nodeType: 'paragraph',
-                content: [{ nodeType: 'text', value: routeName, marks: [], data: {} }],
+                content: [
+                  {
+                    nodeType: 'text',
+                    value: routeName,
+                    marks: [{ type: 'bold' }], // Make route names bold
+                    data: {},
+                  },
+                ],
                 data: {},
               },
             ],
@@ -82,7 +89,7 @@ export async function updateEntry(): Promise<void> {
                   {
                     nodeType: 'text',
                     value: charges[range] ? charges[range].toFixed(2) : '',
-                    marks: [],
+                    marks: [], // No bold for charge values
                     data: {},
                   },
                 ],
@@ -92,12 +99,12 @@ export async function updateEntry(): Promise<void> {
             data: {},
           })),
         ];
-
+      
         return { nodeType: 'table-row', content: rowCells, data: {} };
       });
-
+      
       const monthYearText = getCurrentMonthYear(locale);
-
+      
       const richTextValue = {
         nodeType: 'document',
         data: {},
@@ -125,7 +132,14 @@ export async function updateEntry(): Promise<void> {
                     content: [
                       {
                         nodeType: 'paragraph',
-                        content: [{ nodeType: 'text', value: 'Route Name', marks: [], data: {} }],
+                        content: [
+                          {
+                            nodeType: 'text',
+                            value: 'Route Name',
+                            marks: [{ type: 'bold' }], // Make header "Route Name" bold
+                            data: {},
+                          },
+                        ],
                         data: {},
                       },
                     ],
@@ -136,7 +150,14 @@ export async function updateEntry(): Promise<void> {
                     content: [
                       {
                         nodeType: 'paragraph',
-                        content: [{ nodeType: 'text', value: range, marks: [], data: {} }],
+                        content: [
+                          {
+                            nodeType: 'text',
+                            value: range,
+                            marks: [{ type: 'bold' }], // Make charge ranges (intervals) bold
+                            data: {},
+                          },
+                        ],
                         data: {},
                       },
                     ],
@@ -151,6 +172,7 @@ export async function updateEntry(): Promise<void> {
           },
         ],
       };
+         
 
       console.log(`Updating field for locale: ${locale}`);
       entry.fields.richText = {
